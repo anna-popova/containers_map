@@ -1,33 +1,39 @@
+const errors = new Map();
+
 class ErrorRepository {
-	constructor() {
-		this.errors = new Map();
+	constructor(code, value) {
+		this.code = code;
+		this.value = value;  
+
+	//? не совсем понимаю, как в данном случае корректней добавлять свойства в коллекцию Map. первый или второй вариант корректный?
+	errors.set(this.code, this.value);
+	// errors.set(this, {
+	//   key: this.code,
+	//   value: this.value
+	// });
 	}
 
-	add(errorCode, errorText) {
-		this.errors.set(errorCode, errorText);
-	}
-
+	//? так это выглядит? мы осуществляет поиск по коллекции Map, но при это метод используем на экземпляре прототипа класса? не очень понятно..
 	translate(code) {
-		this.errors.forEach((value, key) => {
-			// console.log(value);
-			// console.log(key);
-
-			if (key === code) {
-				return value;
-			} else {
-				return 'Unknown error';
-			}
-		});
+		if (this.code === code) {
+		return errors.get(code);
+		} else {
+		return 'Unknown error';
+		}
 	}
 }
 
-const map = new ErrorRepository();
+const map1 = new ErrorRepository(400, 'Bad Request');
+const map2 = new ErrorRepository(401, 'Unauthorized');
+const map3 = new ErrorRepository(500, 'Internal Server Error');
+const map4 = new ErrorRepository(501, 'Not Implemented');
+console.log(errors);
 
-
-map.add(1, 'EvalError');
-map.add(2, 'RangeError');
-map.add(3, 'ReferenceError');
-
-console.log(map);
-
-console.log(map.translate(1));
+console.log(map1.translate(400));
+console.log(map1.translate(500));
+console.log(map2.translate(401));
+console.log(map2.translate(402));
+console.log(map3.translate(500));
+console.log(map3.translate(400));
+console.log(map4.translate(501));
+console.log(map4.translate(401));
